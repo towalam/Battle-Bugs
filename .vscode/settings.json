@@ -1,5 +1,6 @@
 {
     "java.project.sourcePaths": [
         "Battle Bugs/gridworld"
-    ]
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }
