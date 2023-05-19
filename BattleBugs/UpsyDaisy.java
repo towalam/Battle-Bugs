@@ -19,6 +19,7 @@ public class UpsyDaisy extends BattleBug2012
         ArrayList<Location> puLocs = getPowerUpLocs(); // ALL powerup locations
         ArrayList<Actor> actors = getActors();  // Nearby actors/entites
         
+        
 
         //CHECK TO SEE if there exists a PowerUp Location, if so then store the first location from the List into goTo
         if (puLocs.size() != 0) {
@@ -42,9 +43,57 @@ public class UpsyDaisy extends BattleBug2012
 
     }
 
-    public void sortClosest() {
+    public void sortColorPowerUp(ArrayList<Location> powerUps, String color) {
+        int minPos;
 
+        for (int i = 0; i < powerUps.size() - 1; i++) {
+
+            minPos = i;
+            for (int j = i + 1; j < powerUps.size(); j++) {
+
+
+            }
+
+        }
     }
+
+    public ArrayList<Location> getStrengthLocs(ArrayList<PowerUp> allPowerUps) {
+        
+        ArrayList<Location> output = new ArrayList<Location>();
+
+        for (PowerUp current : allPowerUps) {
+            if (current.getColor().equals(Color.RED))
+                output.add(current.getLocation());
+        }
+
+        return output;
+    }
+
+    public ArrayList<Location> getDefenseLocs(ArrayList<PowerUp> allPowerUps) {
+        
+        ArrayList<Location> output = new ArrayList<Location>();
+
+        for (PowerUp current : allPowerUps) {
+            if (current.getColor().equals(Color.GREEN))
+                output.add(current.getLocation());
+        }
+
+        return output;
+    }
+
+    public ArrayList<Location> getSpeedLocs(ArrayList<PowerUp> allPowerUps) {
+        
+        ArrayList<Location> output = new ArrayList<Location>();
+
+        for (PowerUp current : allPowerUps) {
+            if (current.getColor().equals(Color.BLUE))
+                output.add(current.getLocation());
+        }
+
+        return output;
+    }
+
+    
 
     
 }
