@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.sql.Array;
 
 import info.gridworld.actor.Actor;
+import info.gridworld.actor.Rock;
 
 public class UpsyDaisy extends BattleBug2012
 {
@@ -26,7 +27,7 @@ public class UpsyDaisy extends BattleBug2012
         ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
         for (Actor current : actors) {
-            if (current instanceof BattleBug) {
+            if (current instanceof BattleBug ) {
                 enemies.add((BattleBug) current);
             }
             else if (current instanceof Projectile) {
@@ -143,7 +144,33 @@ public class UpsyDaisy extends BattleBug2012
         
     }
 
-    
+    //helper method for getting near by rocks
+    public ArrayList<Location> nearbyRocks(ArrayList<Rock> rocks)
+    {
+        ArrayList<Location> output = new ArrayList<Location>();
+        Location bugLocation = super.getLocation();
+        for(Rock current: rocks)
+        {
+            Location location = current.getLocation();
+            if(distanceLocs(bugLocation,location) <=2)
+            {
+                output.add(location);
+            }
+        }
+        return output;
+    }
+
+    //      Finding the safe Locations
+    public ArrayList<Location> safeSpots(ArrayList<Actor> actors) {
+        ArrayList<Location> output = new ArrayList<Location>();
+
+        for (Actor current : actors) {
+            if (current instanceof PowerUp || thisDistance(current.getLocation()) <= 2)
+                output.add(current.getLocation());
+                
+        }
+        return output;
+    }
 
     
 
