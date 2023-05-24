@@ -17,7 +17,7 @@ public class UpsyDaisy extends BattleBug2012
     }
     public void act()
     {
-
+        int numActs = 0;
         
         Location goTo = new Location(5, 5); // Starting Location
         ArrayList<Location> puLocs = getPowerUpLocs(); // ALL powerup locations
@@ -43,24 +43,30 @@ public class UpsyDaisy extends BattleBug2012
             
         }
 
+        if (!enemies.isEmpty() && this.getAmmo() > 0) {
+            goTo = enemies.get(0).getLocation();
+            if (this.getStrength() < 10) {
+                if (thisDistance(enemies.get(0)) < 2) {
+                    if (getDirectionToward(goTo) != getDirection()) {
+                        turnTo(getDirectionToward(goTo));
+                        numActs++;
+                    }
+                    
+                    attack();
+                }
+            }
+        }
 
+        //      DO NOT WRITE BELOW THESE
         //Call the getDirectionToward() method and store the result in a variable named dir.
         int dir = getDirectionToward(goTo);
-
-
-        //Using the getDirection() method check to see if your bug is facing the desired direction dir
-        //If so then call the move() method
-        //if not then call turnTo() method towards the desired direction dir.
-
-        
-
-        
-        
-        if (dir == getDirection()) {
-            move();
-        }
-        else {
-            turnTo(dir);
+        if (numActs == 0) {
+            if (dir == getDirection()) {
+                move();
+            }
+            else {
+                turnTo(dir);
+            }
         }
 
     }
@@ -120,6 +126,10 @@ public class UpsyDaisy extends BattleBug2012
         return (int) Math.sqrt(Math.pow(L1.getRow() - this.getLocation().getRow(), 2) + Math.pow(L1.getCol() - this.getLocation().getCol(), 2));
     }
 
+    public int thisDistance(Actor a) {
+        return (int) Math.sqrt(Math.pow(a.getLocation().getRow() - this.getLocation().getRow(), 2) + Math.pow(a.getLocation().getCol() - this.getLocation().getCol(), 2));
+    }
+
     //      Sorting PowerUps based on Locations (least to greatest distance) <-- Selection Sort
     public void sortPowerUpsLocs(ArrayList<Location> powerUps) {
 
@@ -160,17 +170,33 @@ public class UpsyDaisy extends BattleBug2012
         return output;
     }
 
+    public ArrayList<Location> getLocations(ArrayList<Actor> actors) {
+        ArrayList<Location> output = new ArrayList<Location>();
+        for (Actor current : actors) {
+            output.add(current.getLocation());
+        }
+
+        return output;
+    }
+
     //      Finding the safe Locations
     public ArrayList<Location> safeSpots(ArrayList<Actor> actors) {
         ArrayList<Location> output = new ArrayList<Location>();
 
+        output = getLocations(getNeighbors());
+
         for (Actor current : actors) {
-            if (current instanceof PowerUp || thisDistance(current.getLocation()) <= 2)
+            if (current instanceof PowerUp && thisDistance(current.getLocation()) <= 3)
                 output.add(current.getLocation());
                 
         }
+
+
+
         return output;
     }
+
+
 
     
 
