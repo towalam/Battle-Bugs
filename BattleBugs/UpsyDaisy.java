@@ -43,20 +43,23 @@ public class UpsyDaisy extends BattleBug2012
             
         }
 
-        if (!enemies.isEmpty() && this.getAmmo() > 0) {
-            goTo = enemies.get(0).getLocation();
+        if (!enemies.isEmpty()) {
 
-            int maxRange = this.getStrength() < 10 ? 3 : 4;
+            if (this.getAmmo() != 0) {
+                goTo = enemies.get(0).getLocation();
 
-            if (thisDistance(enemies.get(0)) < maxRange) {
-                if (getDirectionToward(goTo) != getDirection()) {
-                    turnTo(getDirectionToward(goTo));
-                    numActs++;
+                int maxRange = this.getStrength() < 10 ? 3 : 4;
+
+                if (thisDistance(enemies.get(0)) < maxRange) {
+                    if (getDirectionToward(goTo) != getDirection()) {
+                        turnTo(getDirectionToward(goTo));
+                        numActs++;
+                    }
+                    
+                    attack();
                 }
-                
-                attack();
             }
-            
+
         }
 
         //      DO NOT WRITE BELOW THESE
