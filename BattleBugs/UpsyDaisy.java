@@ -17,8 +17,9 @@ public class UpsyDaisy extends BattleBug2012
     }
     public void act()
     {
-        int numActs = 0;
         
+        int numActs = 0;
+
         Location goTo = new Location(5, 5); // Starting Location
         ArrayList<Location> puLocs = getPowerUpLocs(); // ALL powerup locations
         ArrayList<Actor> actors = getActors();  // Nearby actors/entites
@@ -27,8 +28,10 @@ public class UpsyDaisy extends BattleBug2012
         ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
         for (Actor current : actors) {
-            if (current instanceof BattleBug ) {
-                enemies.add((BattleBug) current);
+            if (current instanceof BattleBug) {
+                BattleBug enemy = (BattleBug) current;
+                if (!enemy.isDead())
+                    enemies.add((BattleBug) current);
             }
             else if (current instanceof Projectile) {
                 projectiles.add((Projectile) current);
@@ -45,10 +48,10 @@ public class UpsyDaisy extends BattleBug2012
 
         if (!enemies.isEmpty()) {
 
-            if (this.getAmmo() != 0) {
+            if (this.getAmmo() != 0 && !enemies.get(0).isDead()) {
                 goTo = enemies.get(0).getLocation();
 
-                int maxRange = this.getStrength() < 10 ? 3 : 4;
+                int maxRange = this.getStrength() < 10 ? 2 : 3;
 
                 if (thisDistance(enemies.get(0)) < maxRange) {
                     if (getDirectionToward(goTo) != getDirection()) {
@@ -80,7 +83,7 @@ public class UpsyDaisy extends BattleBug2012
 
     //      Getting the Locations of different powerups (Start)
     //      Strength
-    public ArrayList<Location> getStrengthLocs(ArrayList<PowerUp> allPowerUps) {
+    private ArrayList<Location> getStrengthLocs(ArrayList<PowerUp> allPowerUps) {
         
         ArrayList<Location> output = new ArrayList<Location>();
 
@@ -93,7 +96,7 @@ public class UpsyDaisy extends BattleBug2012
     }
  
     //      Defense
-    public ArrayList<Location> getDefenseLocs(ArrayList<PowerUp> allPowerUps) {
+    private ArrayList<Location> getDefenseLocs(ArrayList<PowerUp> allPowerUps) {
         
         ArrayList<Location> output = new ArrayList<Location>();
 
@@ -106,7 +109,7 @@ public class UpsyDaisy extends BattleBug2012
     }
 
     //      Speed
-    public ArrayList<Location> getSpeedLocs(ArrayList<PowerUp> allPowerUps) {
+    private ArrayList<Location> getSpeedLocs(ArrayList<PowerUp> allPowerUps) {
         
         ArrayList<Location> output = new ArrayList<Location>();
 
@@ -120,23 +123,23 @@ public class UpsyDaisy extends BattleBug2012
     //      (End)
 
     //      Distance between two locations 
-    public int distanceLocs(Location L1, Location L2) {
+    private int distanceLocs(Location L1, Location L2) {
         
 
         return (int) Math.sqrt(Math.pow(L1.getRow() - L2.getRow(), 2) + Math.pow(L1.getCol() - L2.getCol(), 2));
     }
 
     //      Distance between the player and the desired Location
-    public int thisDistance(Location L1) {
+    private int thisDistance(Location L1) {
         return (int) Math.sqrt(Math.pow(L1.getRow() - this.getLocation().getRow(), 2) + Math.pow(L1.getCol() - this.getLocation().getCol(), 2));
     }
 
-    public int thisDistance(Actor a) {
+    private int thisDistance(Actor a) {
         return (int) Math.sqrt(Math.pow(a.getLocation().getRow() - this.getLocation().getRow(), 2) + Math.pow(a.getLocation().getCol() - this.getLocation().getCol(), 2));
     }
 
     //      Sorting PowerUps based on Locations (least to greatest distance) <-- Selection Sort
-    public void sortPowerUpsLocs(ArrayList<Location> powerUps) {
+    private void sortPowerUpsLocs(ArrayList<Location> powerUps) {
 
         for (int i = 0; i < powerUps.size() - 1; i++) {
 
@@ -155,12 +158,12 @@ public class UpsyDaisy extends BattleBug2012
     }
 
     //      Attacking Stretegically
-    public void dodgeAttack() {
+    private void dodgeAttack() {
         
     }
 
     //helper method for getting near by rocks
-    public ArrayList<Location> nearbyRocks(ArrayList<Rock> rocks)
+    private ArrayList<Location> nearbyRocks(ArrayList<Rock> rocks)
     {
         ArrayList<Location> output = new ArrayList<Location>();
         Location bugLocation = super.getLocation();
@@ -175,17 +178,16 @@ public class UpsyDaisy extends BattleBug2012
         return output;
     }
 
-    public ArrayList<Location> getLocations(ArrayList<Actor> actors) {
+    private ArrayList<Location> getLocations(ArrayList<Actor> actors) {
         ArrayList<Location> output = new ArrayList<Location>();
         for (Actor current : actors) {
             output.add(current.getLocation());
         }
-
         return output;
     }
 
     //      Finding the safe Locations
-    public ArrayList<Location> safeSpots(ArrayList<Actor> actors) {
+    private ArrayList<Location> safeSpots(ArrayList<Actor> actors) {
         ArrayList<Location> output = new ArrayList<Location>();
 
         output = getLocations(getNeighbors());
@@ -200,6 +202,44 @@ public class UpsyDaisy extends BattleBug2012
 
         return output;
     }
+
+    //      Going around obstacles??
+    //      Helper method
+    private ArrayList<Location> locationSurround() {
+        ArrayList<Location> output = new ArrayList<Location>();
+
+        int dist = this.getSpeed() < 20 ? 3 : 4;
+        int row = this.getLocation().getRow() - dist;
+        int col = this.getLocation().getCol() - dist;
+
+        while (row < 0) {
+            row++;
+        }
+
+        while (row > 26) {
+            row--;
+        }
+
+        while (col < 0) {
+            col++;
+        }
+
+        while (col > 26) {
+            col--;
+        }
+
+        for (int i = col; i <= this.getLocation().getCol() + dist && i <= 26; i++) {
+            for (int j = row; j <= this.getLocation().getRow() + dist && j <= 26; j++) {
+                output.add(new Location(i, j));
+            }
+        }
+
+        
+
+        return output;
+    }
+
+    
 
 
 
