@@ -55,7 +55,7 @@ public class UpsyDaisy extends BattleBug2012
 
         if (!enemies.isEmpty()) {
 
-            if (this.getAmmo() != 0 && !enemies.get(0).isDead()) {
+            if (this.getAmmo() != 0 && !enemies.get(0).isDead() && this.getStrength() + 3 >= enemies.get(0).getDefense()) {
                 goTo = enemies.get(0).getLocation();
 
                 int maxRange = this.getStrength() < 10 ? 2 : 3;
@@ -86,6 +86,7 @@ public class UpsyDaisy extends BattleBug2012
 
     }
 
+    //      Making the rock grids
     
 
     //      Getting the Locations of different powerups (Start)
