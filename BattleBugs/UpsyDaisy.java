@@ -15,6 +15,7 @@ public class UpsyDaisy extends BattleBug2012
     {
             super(str, def, spd, name, col);
     }
+
     public void act()
     {
         
@@ -25,19 +26,25 @@ public class UpsyDaisy extends BattleBug2012
         ArrayList<Actor> actors = getActors();  // Nearby actors/entites
 
         ArrayList<BattleBug> enemies = new ArrayList<BattleBug>();
-        ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+        ArrayList<Actor> obstacles = new ArrayList<Actor>();
+        
 
+        //      Puts nearby actors into respective arrays
         for (Actor current : actors) {
             if (current instanceof BattleBug) {
                 BattleBug enemy = (BattleBug) current;
                 if (!enemy.isDead())
                     enemies.add((BattleBug) current);
+                
+                else
+                    obstacles.add(enemy);
             }
-            else if (current instanceof Projectile) {
-                projectiles.add((Projectile) current);
-            }
-        }
-        
+
+            else if (current instanceof Rock || current instanceof Regulator)
+                obstacles.add(current);
+            
+            
+        }        
         
 
         if (puLocs.size() != 0) { // If it's not empty, then set the goTo to the nearest powerup
@@ -157,11 +164,6 @@ public class UpsyDaisy extends BattleBug2012
         }
     }
 
-    //      Attacking Stretegically
-    private void dodgeAttack() {
-        
-    }
-
     //helper method for getting near by rocks
     private ArrayList<Location> nearbyRocks(ArrayList<Rock> rocks)
     {
@@ -215,6 +217,7 @@ public class UpsyDaisy extends BattleBug2012
         while (row < 0) {
             row++;
         }
+        
 
         while (row > 26) {
             row--;
@@ -236,6 +239,15 @@ public class UpsyDaisy extends BattleBug2012
 
         
 
+        return output;
+    }
+
+    private Location moveToSafeLocation(ArrayList<Actor> obstacles) {
+        Location output = new Location(0, 0);
+
+        ArrayList<Location> surround = locationSurround();
+        
+        
         return output;
     }
 
