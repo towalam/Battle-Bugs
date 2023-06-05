@@ -11,9 +11,11 @@ import info.gridworld.actor.Rock;
 public class UpsyDaisy extends BattleBug2012
 {
 
+
     public UpsyDaisy(int str, int def, int spd, String name, Color col)
     {
             super(str, def, spd, name, col);
+            
     }
 
     public void act()
@@ -27,6 +29,18 @@ public class UpsyDaisy extends BattleBug2012
 
         ArrayList<BattleBug> enemies = new ArrayList<BattleBug>();
         ArrayList<Actor> obstacles = new ArrayList<Actor>();
+
+        ArrayList<Location> futureRocks = this.getNumAct() / 40 < 26 ? offBounds() : null;
+
+        if (futureRocks != null && this.getNumAct() % 40 >= 35) {
+            for (Location current : futureRocks) {
+                for (int i = 0; i < puLocs.size(); i++) {
+                    if (current.equals(puLocs.get(i))) {
+                        puLocs.remove(i);
+                    }
+                }
+            }
+        }
         
 
         //      Puts nearby actors into respective arrays
@@ -59,6 +73,9 @@ public class UpsyDaisy extends BattleBug2012
                 goTo = enemies.get(0).getLocation();
 
                 int maxRange = this.getStrength() < 10 ? 2 : 3;
+                if (this.getStrength() >= 20) {
+                    maxRange = 4;
+                }
 
                 if (thisDistance(enemies.get(0)) < maxRange) {
                     if (getDirectionToward(goTo) != getDirection()) {
@@ -86,7 +103,22 @@ public class UpsyDaisy extends BattleBug2012
 
     }
 
-    //      Making the rock grids
+    //      Making the rock "bounds"
+    private ArrayList<Location> offBounds() {
+        ArrayList<Location> output = new ArrayList<Location>();
+        int acts = this.getNumAct() / 40; 
+    
+        for (int i = acts; i < 27 - acts && acts < 27; i++) {
+            output.add(new Location(i, acts));
+            output.add(new Location(acts, i));
+
+            output.add(new Location(26 - acts, i));
+            output.add(new Location(i, 26 - acts));
+        }
+
+        
+        return output;
+    }
     
 
     //      Getting the Locations of different powerups (Start)
@@ -173,7 +205,7 @@ public class UpsyDaisy extends BattleBug2012
         for(Rock current: rocks)
         {
             Location location = current.getLocation();
-            if(distanceLocs(bugLocation,location) <=2)
+            if(distanceLocs(bugLocation, location) <= 2)
             {
                 output.add(location);
             }
@@ -242,24 +274,6 @@ public class UpsyDaisy extends BattleBug2012
 
         return output;
     }
-
-    private Location moveToSafeLocation(ArrayList<Actor> obstacles) {
-        Location output = new Location(0, 0);
-
-        ArrayList<Location> surround = locationSurround();
-        
-        
-        return output;
-    }
-
-    
-
-
-
-    
-
-    
-
     
 
     
