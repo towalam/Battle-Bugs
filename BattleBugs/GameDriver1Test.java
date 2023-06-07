@@ -26,7 +26,7 @@ public class GameDriver1Test
         BBWorld world = new BBWorld(gr);
 
         //This is where you enter your Bugs into the game
-        battleBugs.add(new UpsyDaisy(0, 3,2, "UpsyDaisy", Color.BLACK));
+        battleBugs.add(new UpsyDaisy(3, 1,1, "UpsyDaisy", Color.BLACK));
 	battleBugs.add(new UpsyDaisy(2,2,1, "BattleBuggy2", null));
 	battleBugs.add(new UpsyDaisy(0,4,1, "BBExample3", null));
 	battleBugs.add(new UpsyDaisy(0,5,0, "BBExample4", Color.RED));

@@ -1,3 +1,9 @@
+/*
+ * @authors
+    * Xi Chen
+    * Towsiful Alam
+ */
+
 package BattleBugs;
 import java.util.ArrayList;
 import info.gridworld.grid.Grid;
@@ -69,7 +75,7 @@ public class UpsyDaisy extends BattleBug2012
 
         if (!enemies.isEmpty()) {
 
-            if (this.getAmmo() != 0 && !enemies.get(0).isDead() && this.getStrength() + 3 >= enemies.get(0).getDefense()) {
+            if (this.getAmmo() != 0 && !enemies.get(0).isDead() && this.getStrength() >= enemies.get(0).getDefense() + 3) {
                 goTo = enemies.get(0).getLocation();
 
                 int maxRange = this.getStrength() < 10 ? 2 : 3;
