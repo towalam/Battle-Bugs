@@ -92,6 +92,9 @@ public class UpsyDaisy extends BattleBug2012
                     attack();
                 }
             }
+            else {
+                runAway(enemies.get(0));
+            }
 
         }
 
@@ -100,7 +103,11 @@ public class UpsyDaisy extends BattleBug2012
         int dir = getDirectionToward(goTo);
         if (numActs == 0) {
             if (dir == getDirection()) {
-                move();
+                if (canMove())
+                    move();
+                else {
+                    turnTo(getDirectionToward(goSafe(safeSpots(getActors()))));
+                }
             }
             else {
                 turnTo(dir);
@@ -231,13 +238,13 @@ public class UpsyDaisy extends BattleBug2012
     private ArrayList<Location> safeSpots(ArrayList<Actor> actors) {
         ArrayList<Location> output = new ArrayList<Location>();
 
-        output = getLocations(getNeighbors());
-
         for (Actor current : actors) {
-            if (current instanceof PowerUp && thisDistance(current.getLocation()) <= 3)
+            if (current instanceof PowerUp && thisDistance(current.getLocation()) <= (this.getSpeed() < 10 ? 3 : 4))
                 output.add(current.getLocation());
                 
         }
+
+        
 
 
 
@@ -245,7 +252,7 @@ public class UpsyDaisy extends BattleBug2012
     }
 
     //      Going around obstacles??
-    //      Helper method
+    //      Helper method for rocks
     private ArrayList<Location> locationSurround() {
         ArrayList<Location> output = new ArrayList<Location>();
 
@@ -279,6 +286,19 @@ public class UpsyDaisy extends BattleBug2012
         
 
         return output;
+    }
+
+    public Location goSafe(ArrayList<Location> safeSpots) {
+        Location output = new Location(13, 13); 
+
+        
+
+        return output;
+    }
+
+    //      This will make the bug run away from the enemies
+    public void runAway(BattleBug b) {
+        
     }
     
 
