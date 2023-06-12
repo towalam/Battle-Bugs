@@ -16,11 +16,12 @@ import info.gridworld.actor.Rock;
 
 public class UpsyDaisy extends BattleBug2012
 {
-
+    boolean moveFlag;
 
     public UpsyDaisy(int str, int def, int spd, String name, Color col)
     {
             super(str, def, spd, name, col);
+            moveFlag = false;
             
     }
 
@@ -30,7 +31,7 @@ public class UpsyDaisy extends BattleBug2012
         int numActs = 0;
 
         Location goTo = new Location(5, 5); // Starting Location
-        ArrayList<Location> puLocs = getPowerUpLocs(); // ALL powerup locations
+        ArrayList<Location> puLocs = prioBasedPU(); // ALL powerup locations
         ArrayList<Actor> actors = getActors();  // Nearby actors/entites
 
         ArrayList<BattleBug> enemies = new ArrayList<BattleBug>();
@@ -92,8 +93,16 @@ public class UpsyDaisy extends BattleBug2012
                     attack();
                 }
             }
-            else {
-                runAway(enemies.get(0));
+            else if (enemies.get(0).getStrength() >= this.getDefense() + 3) {
+                if (!moveFlag)
+                {
+                    turn(180);
+                    moveFlag = true;
+                } 
+                else {
+                    move();
+                }
+                numActs++;
             }
 
         }
@@ -102,18 +111,60 @@ public class UpsyDaisy extends BattleBug2012
         //Call the getDirectionToward() method and store the result in a variable named dir.
         int dir = getDirectionToward(goTo);
         if (numActs == 0) {
-            if (dir == getDirection()) {
-                if (canMove())
+            if (dir == getDirection() && !moveFlag) {
+                if (canMove()) {
                     move();
+                    moveFlag = false;
+                    numActs++;
+                }
                 else {
-                    turnTo(getDirectionToward(goSafe(safeSpots(getActors()))));
+                    if (!moveFlag) {
+                        turn(45);
+                        moveFlag = true;
+                    }
+                    else {
+                        move();
+                        numActs++;
+                        moveFlag = false;
+                    }
+
                 }
             }
             else {
                 turnTo(dir);
+                moveFlag = false;
+                numActs++;
             }
         }
 
+    }
+
+    private ArrayList<Location> prioBasedPU() {
+        ArrayList<Location> output = new ArrayList<Location>();
+        int atk = this.getStrength();
+        int def = this.getDefense();
+        int speed = this.getSpeed();
+
+        if (atk < def * 1.5) {
+            output = getStrengthLocs();
+        } else {
+            output = getPowerUpLocs();
+        }
+        
+        return output;
+    }
+
+    //      Merging two ArrayLists of Locations
+    private ArrayList<Location> merge(ArrayList<Location> input1, ArrayList<Location> input2) {
+        ArrayList<Location> output = new ArrayList<Location>();
+        for (Location current : input1) {
+            output.add(current);
+        }
+        for (Location current : input2) {
+            output.add(current);
+        }
+
+        return output;
     }
 
     //      Making the rock "bounds"
@@ -136,11 +187,11 @@ public class UpsyDaisy extends BattleBug2012
 
     //      Getting the Locations of different powerups (Start)
     //      Strength
-    private ArrayList<Location> getStrengthLocs(ArrayList<PowerUp> allPowerUps) {
+    private ArrayList<Location> getStrengthLocs() {
         
         ArrayList<Location> output = new ArrayList<Location>();
 
-        for (PowerUp current : allPowerUps) {
+        for (PowerUp current : getPowerUps()) {
             if (current.getColor().equals(Color.RED))
                 output.add(current.getLocation());
         }
@@ -149,11 +200,11 @@ public class UpsyDaisy extends BattleBug2012
     }
  
     //      Defense
-    private ArrayList<Location> getDefenseLocs(ArrayList<PowerUp> allPowerUps) {
+    private ArrayList<Location> getDefenseLocs() {
         
         ArrayList<Location> output = new ArrayList<Location>();
 
-        for (PowerUp current : allPowerUps) {
+        for (PowerUp current : getPowerUps()) {
             if (current.getColor().equals(Color.GREEN))
                 output.add(current.getLocation());
         }
@@ -162,11 +213,11 @@ public class UpsyDaisy extends BattleBug2012
     }
 
     //      Speed
-    private ArrayList<Location> getSpeedLocs(ArrayList<PowerUp> allPowerUps) {
+    private ArrayList<Location> getSpeedLocs() {
         
         ArrayList<Location> output = new ArrayList<Location>();
 
-        for (PowerUp current : allPowerUps) {
+        for (PowerUp current : getPowerUps()) {
             if (current.getColor().equals(Color.BLUE))
                 output.add(current.getLocation());
         }
@@ -234,22 +285,7 @@ public class UpsyDaisy extends BattleBug2012
         return output;
     }
 
-    //      Finding the safe Locations
-    private ArrayList<Location> safeSpots(ArrayList<Actor> actors) {
-        ArrayList<Location> output = new ArrayList<Location>();
-
-        for (Actor current : actors) {
-            if (current instanceof PowerUp && thisDistance(current.getLocation()) <= (this.getSpeed() < 10 ? 3 : 4))
-                output.add(current.getLocation());
-                
-        }
-
-        
-
-
-
-        return output;
-    }
+   
 
     //      Going around obstacles??
     //      Helper method for rocks
@@ -288,19 +324,8 @@ public class UpsyDaisy extends BattleBug2012
         return output;
     }
 
-    public Location goSafe(ArrayList<Location> safeSpots) {
-        Location output = new Location(13, 13); 
-
-        
-
-        return output;
-    }
-
-    //      This will make the bug run away from the enemies
-    public void runAway(BattleBug b) {
-        
-    }
     
+
 
     
 }
